@@ -91,27 +91,68 @@ app.post('/login', async (req, res) => {
 });
 
 
-
-
-
-
-app.post('/products', Product, async (req, res) => {
-try {
-    const product = new Product(req.body);
-    const user = await User.findById(req.user._id);
-
-    if (!user || user.role !== 'admin') {
-        return res.status(403).json({ message: "Access denied" });
+// Admin – Update Product
+app.put('/api/products/:id', async (req, res) => {
+    try {
+        const { name, price, stockQuantity } = req.body;
+        if (!name || !price || !stockQuantity) return res.status(400).json({ message: 'All fields are required' });
+         // check user role is admin
+        if (req.userId && req.userId.role !== 'admin') {
+            return res.status(400).json({ message: 'You do not have permission' });
+        }
+        const updatedProduct = await product.findByIdAndUpdate(
+            req.params.id,
+            { name, price, stockQuantity },
+            { new: true }
+        );
+        
+    } catch (error) {
+        console.error('Error updating:', error);
+        res.status(500).json({ message: 'Server error' });
     }
-    await product.save();
-    res.status(201).json(product);
-} catch (error) {
-    res.status(400).json({ error: error.message });
-}
 });
 
 
+//User – View All Products
 
+app.get('/api/products', async (req, res) => {
+    try {
+        const products = await product.find();  
+        res.status(200).json({ products });
+    } catch (error) {
+        console.error('Error :', error);
+        res.status(500).json({ message: 'Server error' });
+    }   
+});
+
+//User – View Product by ID
+app.get('/api/products/:id', async (req, res) => {
+try {
+    const products = await product.findById(req.params.id);
+    if (!product) {
+        return res.status(404).send('User not found');
+    }
+    res.json(products) ;
+
+} catch (error) {
+    console.error('Error :', error);
+    res.status(500).json({ message: 'Server error' });
+    
+}
+});
+
+//User – View Product by Name
+app.get('/products/:name',async(req,res)=>{
+    try {
+        const product = await Product.find({name:req.params.name});
+        if(!product){
+            return res.status(404).json({msg:"Product not found"});
+        }
+        res.status(200).json({msg:"Product updated successfully",product});
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 // Start the server
 app.listen(PORT, () => {
