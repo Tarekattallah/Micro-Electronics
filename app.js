@@ -33,6 +33,7 @@ connectDB();
 
 //...require user model
 const User = require('./models/User');
+const Product = require('./models/product');
 
 
 
@@ -88,6 +89,28 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Error logging in user', error: error.message });
     }
 });
+
+
+
+
+
+
+app.post('/products', Product, async (req, res) => {
+try {
+    const product = new Product(req.body);
+    const user = await User.findById(req.user._id);
+
+    if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied" });
+    }
+    await product.save();
+    res.status(201).json(product);
+} catch (error) {
+    res.status(400).json({ error: error.message });
+}
+});
+
+
 
 
 // Start the server
