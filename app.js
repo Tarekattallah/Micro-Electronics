@@ -158,5 +158,3 @@ app.get('/products/:name',async(req,res)=>{
 app.listen(PORT, () => {
     console.log(`Server is running  ${PORT}`);
 });
-
-
