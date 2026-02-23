@@ -1,9 +1,6 @@
 // Require Mongoose
-
 const mongoose = require('mongoose');
-
 // Define a schema
-
 const ProductSchema = new mongoose.Schema({
     name : { type: String, required: true, trim: true },
     price :{type : Number , required :true  , min : 0 } ,
@@ -11,11 +8,11 @@ const ProductSchema = new mongoose.Schema({
     userId : { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 } , { timestamps: true });
 
-
+// Create a model from the schema and export it
 //create a model
 // Export the modelmodule.exports = Product;
 
-module.exports = mongoose.model('Product', ProductSchema);
+module.exports = mongoose.model('Product', ProductSchema); 
 
 
 
