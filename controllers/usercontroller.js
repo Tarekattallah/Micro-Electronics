@@ -40,8 +40,6 @@ exports.register = async (req, res) => {
 };
 
 // Login
-// const jwt = require('jsonwebtoken');
-const jwt = require('jsonwebtoken');
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
